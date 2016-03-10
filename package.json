@@ -1,0 +1,21 @@
+{
+    "main": "index.html",
+    "name": "JSONEditor",
+    "description": "Convenient JSON Editor",
+    "version": "0.1.0",
+    "keywords": [ "json", "editor", "node-webkit" ],
+    "window": {
+        "title": "JSONEditor",
+        "icon": "link.png",
+        "toolbar": false,
+        "frame": true,
+        "width": 800,
+        "height": 500,
+        "position": "mouse",
+        "min_width": 400,
+        "min_height": 200
+    },
+    "webkit": {
+        "plugin": true
+    }
+}

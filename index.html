@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>JSONEditor</title>
+
+        <!-- when using the mode "code", it's important to specify charset utf-8 -->
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+
+        <link href="bower_components/jsoneditor/dist/jsoneditor.css" rel="stylesheet" type="text/css">
+        <script src="bower_components/jsoneditor/dist/jsoneditor.js"></script>
+
+        <style type="text/css">
+            body {
+                font: 12pt monaco;
+                color: #4d4d4d;
+                line-height: 150%;
+                margin:0;
+                padding:0;
+            }
+            code {
+                background-color: #f5f5f5;
+            }
+            div.jsoneditor{
+                border:none;
+            }
+            #jsoneditor {
+                font-size: 18px;
+                width: 100%;
+                height: 500px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div id="jsoneditor"></div>
+
+        <script>
+            var container = document.getElementById('jsoneditor');
+            var options = {
+                mode: 'code',
+                modes: ['code', 'tree', 'text'], // allowed modes
+                onError: function (err) {
+                    alert(err.toString());
+                },
+                onModeChange: function (newMode, oldMode) {
+                    console.log('Mode switched from', oldMode, 'to', newMode);
+                }
+            };
+            var editor = new JSONEditor(container, options, null);
+            document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
+            window.onresize = function(){
+                document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
+            }
+        </script>
+    </body>
+</html>
