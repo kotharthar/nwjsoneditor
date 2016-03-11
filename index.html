@@ -165,6 +165,9 @@
                 gui.App.unregisterGlobalHotKey(close_window_shortcut);
                 gui.App.unregisterGlobalHotKey(new_window_shortcut);
             });
+            gui_window.on('closed', function(){
+                    gui_window = null;
+            });
         </script>
     </body>
 </html>
