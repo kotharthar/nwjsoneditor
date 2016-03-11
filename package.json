@@ -6,7 +6,7 @@
     "keywords": [ "json", "editor", "node-webkit" ],
     "window": {
         "title": "JSONEditor",
-        "icon": "link.png",
+        "icon": "json.png",
         "toolbar": false,
         "frame": true,
         "width": 800,

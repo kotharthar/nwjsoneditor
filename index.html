@@ -35,6 +35,51 @@
         <div id="jsoneditor"></div>
 
         <script>
+            var gui = require('nw.gui');
+            var cp = gui.Clipboard.get();
+            var win = gui.Window.get();
+
+            var copy = {
+                key : "Ctrl+C",
+                active : function() {
+                    cp.set(editor.getText(),"text");
+                    console.log(editor.getText());
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
+            var paste = {
+                key : "Ctrl+V",
+                active : function() {
+                    var data = cp.get("text");
+                    editor.aceEditor.insert(data);
+                    console.log(data);
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
+            var option = {
+                key : "Ctrl+Q",
+                active : function() {
+                    gui.App.quit();
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
+
+            // Create a shortcut with |option|.
+            var shortcut = new gui.Shortcut(option);
+            var copy_shortcut = new gui.Shortcut(copy);
+            var paste_shortcut = new gui.Shortcut(paste);
+
+
+
             var container = document.getElementById('jsoneditor');
             var options = {
                 mode: 'code',
@@ -47,10 +92,30 @@
                 }
             };
             var editor = new JSONEditor(container, options, null);
+
+
             document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
             window.onresize = function(){
                 document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
             }
+
+            //default bind
+                gui.App.registerGlobalHotKey(shortcut);
+                gui.App.registerGlobalHotKey(copy_shortcut);
+                gui.App.registerGlobalHotKey(paste_shortcut);
+
+            win.on('focus', function(){
+                gui.App.registerGlobalHotKey(shortcut);
+                gui.App.registerGlobalHotKey(copy_shortcut);
+                gui.App.registerGlobalHotKey(paste_shortcut);
+            });
+
+            win.on('blur', function(){
+                gui.App.unregisterGlobalHotKey(shortcut);
+                gui.App.unregisterGlobalHotKey(copy_shortcut);
+                gui.App.unregisterGlobalHotKey(paste_shortcut);
+            });
         </script>
     </body>
 </html>
+
