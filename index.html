@@ -125,6 +125,19 @@
                     console.log(msg);
                 }
             };
+
+            var switch_mode = {
+                key : "Ctrl+M",
+                active : function() {
+                    if(editor.getMode() == "text") editor.setMode("code");
+                    else if(editor.getMode() == "tree") editor.setMode("text");
+                    else if(editor.getMode() == "code") editor.setMode("tree");
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
             // Create a shortcut with |option|.
             var quit_shortcut = new gui.Shortcut(quit);
             var copy_shortcut = new gui.Shortcut(copy);
@@ -132,6 +145,7 @@
             var close_window_shortcut = new gui.Shortcut(close_window);
             var new_window_shortcut = new gui.Shortcut(new_window);
             var open_file_shortcut = new gui.Shortcut(open_file);
+            var switch_mode_shortcut = new gui.Shortcut(switch_mode);
 
             // Editor Contiainer and Options
             var container = document.getElementById('jsoneditor');
@@ -142,7 +156,7 @@
                     alert(err.toString());
                 },
                 onModeChange: function (newMode, oldMode) {
-                    console.log('Mode switched from', oldMode, 'to', newMode);
+                    //console.log('Mode switched from', oldMode, 'to', newMode);
                 }
             };
             var editor = new JSONEditor(container, options, null);
@@ -163,6 +177,7 @@
             gui.App.registerGlobalHotKey(close_window_shortcut);
             gui.App.registerGlobalHotKey(new_window_shortcut);
             gui.App.registerGlobalHotKey(open_file_shortcut);
+            gui.App.registerGlobalHotKey(switch_mode_shortcut);
 
             gui_window.on('focus', function(){
                 gui.App.registerGlobalHotKey(quit_shortcut);
@@ -171,6 +186,7 @@
                 gui.App.registerGlobalHotKey(close_window_shortcut);
                 gui.App.registerGlobalHotKey(new_window_shortcut);
                 gui.App.registerGlobalHotKey(open_file_shortcut);
+                gui.App.registerGlobalHotKey(switch_mode_shortcut);
             });
 
             gui_window.on('blur', function(){
@@ -180,6 +196,7 @@
                 gui.App.unregisterGlobalHotKey(close_window_shortcut);
                 gui.App.unregisterGlobalHotKey(new_window_shortcut);
                 gui.App.unregisterGlobalHotKey(open_file_shortcut);
+                gui.App.unregisterGlobalHotKey(switch_mode_shortcut);
             });
             gui_window.on('closed', function(){
                     gui_window = null;
@@ -190,6 +207,7 @@
                 chooser.addEventListener("change", function(evt) {
                         if(this.value){
                             if(fs.existsSync(this.value)){
+                                gui_window.title = this.value;
                                 var content = fs.readFileSync(this.value, "utf8");
                                 editor.setText(content);
                             }
