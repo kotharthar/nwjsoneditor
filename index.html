@@ -35,34 +35,49 @@
         <div id="jsoneditor"></div>
 
         <script>
-            var gui = require('nw.gui');
-            var cp = gui.Clipboard.get();
-            var win = gui.Window.get();
 
+            // Importanted API
+            var gui = require('nw.gui');
+            var clipboard = gui.Clipboard.get();
+            var gui_window = gui.Window.get();
+
+
+            //Same as $(document).ready();
+            function ready(fn) {
+                if (document.readyState != 'loading'){
+                  fn();
+                } else {
+                  document.addEventListener('DOMContentLoaded', fn);
+                }
+            }
+
+            // Copy Short-cut options
             var copy = {
                 key : "Ctrl+C",
                 active : function() {
                     cp.set(editor.getText(),"text");
-                    console.log(editor.getText());
                 },
                 failed : function(msg) {
                     // :(, fail to register the |key| or couldn't parse the |key|.
                     console.log(msg);
                 }
             };
+
+            // Paste Short-cut options
             var paste = {
                 key : "Ctrl+V",
                 active : function() {
                     var data = cp.get("text");
                     editor.aceEditor.insert(data);
-                    console.log(data);
                 },
                 failed : function(msg) {
                     // :(, fail to register the |key| or couldn't parse the |key|.
                     console.log(msg);
                 }
             };
-            var option = {
+
+            // Quit short-cut options
+            var quit = {
                 key : "Ctrl+Q",
                 active : function() {
                     gui.App.quit();
@@ -73,13 +88,39 @@
                 }
             };
 
+            // Quit short-cut options
+            var close_window = {
+                key : "Ctrl+W",
+                active : function() {
+                    //TODO: Save file if needed.
+                    gui_window.close(true);
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
+
+            // Quit short-cut options
+            var new_window = {
+                key : "Ctrl+N",
+                active : function() {
+                    //TODO: Save file if needed.
+                    gui.Window.open("index.html",{focus: true});
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
             // Create a shortcut with |option|.
-            var shortcut = new gui.Shortcut(option);
+            var quit_shortcut = new gui.Shortcut(quit);
             var copy_shortcut = new gui.Shortcut(copy);
             var paste_shortcut = new gui.Shortcut(paste);
+            var close_window_shortcut = new gui.Shortcut(close_window);
+            var new_window_shortcut = new gui.Shortcut(new_window);
 
-
-
+            // Editor Contiainer and Options
             var container = document.getElementById('jsoneditor');
             var options = {
                 mode: 'code',
@@ -94,26 +135,35 @@
             var editor = new JSONEditor(container, options, null);
 
 
+            // Set editor height
             document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
+
+            // Auto resize function
             window.onresize = function(){
                 document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
             }
 
-            //default bind
-                gui.App.registerGlobalHotKey(shortcut);
-                gui.App.registerGlobalHotKey(copy_shortcut);
-                gui.App.registerGlobalHotKey(paste_shortcut);
+            //default shortcut bind
+            gui.App.registerGlobalHotKey(quit_shortcut);
+            gui.App.registerGlobalHotKey(copy_shortcut);
+            gui.App.registerGlobalHotKey(paste_shortcut);
+            gui.App.registerGlobalHotKey(close_window_shortcut);
+            gui.App.registerGlobalHotKey(new_window_shortcut);
 
-            win.on('focus', function(){
-                gui.App.registerGlobalHotKey(shortcut);
+            gui_window.on('focus', function(){
+                gui.App.registerGlobalHotKey(quit_shortcut);
                 gui.App.registerGlobalHotKey(copy_shortcut);
                 gui.App.registerGlobalHotKey(paste_shortcut);
+                gui.App.registerGlobalHotKey(close_window_shortcut);
+                gui.App.registerGlobalHotKey(new_window_shortcut);
             });
 
-            win.on('blur', function(){
-                gui.App.unregisterGlobalHotKey(shortcut);
+            gui_window.on('blur', function(){
+                gui.App.unregisterGlobalHotKey(quit_shortcut);
                 gui.App.unregisterGlobalHotKey(copy_shortcut);
                 gui.App.unregisterGlobalHotKey(paste_shortcut);
+                gui.App.unregisterGlobalHotKey(close_window_shortcut);
+                gui.App.unregisterGlobalHotKey(new_window_shortcut);
             });
         </script>
     </body>
