@@ -28,11 +28,14 @@
                 width: 100%;
                 height: 500px;
             }
+            #holder.hover {border: 5px dashed #333333;}
         </style>
     </head>
     <body>
 
-        <div id="jsoneditor"></div>
+        <div id="holder">
+            <div id="jsoneditor"></div>
+        </div>
         <input style="display:none;" id="fileDialog" type="file" accept=".json,.txt"/>
         <input style="display:none;" id="saveAsFileDialog" type="file" accept=".json,.txt" nwsaveas/>
 
@@ -40,10 +43,12 @@
 
             // Importanted API
             var fs = require('fs');
+            var path = require('path');
             var gui = require('nw.gui');
             var clipboard = gui.Clipboard.get();
             var gui_window = gui.Window.get();
             var current_file = "untitled.json";
+            var holder = null; //document.getElementById('holder');
 
 
             //Same as $(document).ready();
@@ -133,11 +138,15 @@
                 var chooser = document.querySelector(name);
                 chooser.addEventListener("change", function(evt) {
                         if(this.value){
+                        if(path.extname(this.value) == ".json"){
                             if(fs.existsSync(this.value)){
                                 current_file = this.value;
                                 gui_window.title = this.value;
                                 var content = fs.readFileSync(this.value, "utf8");
                                 editor.setText(content);
+                            }
+                            }else{
+                            alert("Error: Not a JSON file.");
                             }
                         }
                 }, false);
@@ -173,6 +182,34 @@
                 window.onresize = function(){
                     document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
                 }           
+
+                // prevent default behavior from changing page on dropped file
+                window.ondragover = function(e) { e.preventDefault(); return false };
+                // NOTE: ondrop events WILL NOT WORK if you do not "preventDefault" in the ondragover event!!
+                window.ondrop = function(e) { e.preventDefault(); return false };
+
+                // Setup holder and drag and drop
+                holder = document.getElementById('holder');
+                holder.ondragover = function () {this.className = 'hover'; return false; };
+                holder.ondrop = function (e) {
+                    e.preventDefault();
+                    if(e.dataTransfer.files.length > 0){
+                        var ff = e.dataTransfer.files[0].path;
+                        if(path.extname(ff) == ".json"){
+                        if(fs.existsSync(ff)){
+                            current_file = ff;
+                            gui_window.title = ff;
+                            var content = fs.readFileSync(ff, "utf8");
+                            editor.setText(content);
+                        }
+                        }else{
+                            alert("Error: Not a JSON file.");
+                        }
+                    }
+
+                    this.className = '';
+                    return false;
+                };
             });
         </script>
         </body>
