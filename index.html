@@ -70,7 +70,7 @@
                     active : function() { gui_window.close(true); },
                     failed : function(msg) { console.log(msg); }}),
                 "new_sc": new gui.Shortcut( {key : "Ctrl+N",
-                    active : function() { gui.Window.open("index.html",{focus: true}); }, 
+                    active : function() { gui.Window.open("index.html",{focus: true, toolbar: false}); }, 
                     failed : function(msg) { console.log(msg); }}),
                 "open_sc": new gui.Shortcut( {key : "Ctrl+O",
                     active : function() { chooseFile('#fileDialog'); }, 
