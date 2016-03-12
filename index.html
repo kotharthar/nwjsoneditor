@@ -138,7 +138,7 @@
                 var chooser = document.querySelector(name);
                 chooser.addEventListener("change", function(evt) {
                         if(this.value){
-                        if(path.extname(this.value) == ".json"){
+                        if(path.extname(ff) == ".json"){
                             if(fs.existsSync(this.value)){
                                 current_file = this.value;
                                 gui_window.title = this.value;

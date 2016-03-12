@@ -1,0 +1,36 @@
+JSONEditor with Node-Webkit
+===
+
+The main purpose of this project is to wrap JSON Editor into Desktop Application.
+This depends on two projects;
+1. http://nwjs.io
+2. http://jsoneditoronline.org (https://github.com/josdejong/jsoneditor/)
+
+Running the application
+---
+Install jsoneditor in the project folder by running `bower install jsoneditor`.
+Download a copy of `nwjs` for respective platform into the project folder.
+Run `nwjs`.
+
+Packaging
+---
+For mac, just run `build_mac.sh`.
+For other platforms, adapt accordingly based on instructions on this page (http://docs.nwjs.io/en/v0.13.0-rc2/For%20Users/Package%20and%20Distribute/#package-your-app)
+
+
+Features
+---
+- No MenuBar
+- No Autosave
+- Drag and Drop file
+- Ctrl+C - Copy
+- Ctrl+V - Paste
+- Ctrl+S - Save File
+- Ctrl+Shift+S - Save As
+- Ctrl+Q - Quit
+- Ctrl+W - Close current window
+- Ctrl+O - Open File
+- Ctrl+N - Open new window
+- Ctrl+Shift+N - New blank file in current window
+- Ctrl+M - Swtich modes between Code and Tree
+
