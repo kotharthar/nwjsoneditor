@@ -90,8 +90,7 @@
                     active : function() { current_file = null; editor.setText("{}"); gui_window.title = "untitled.json";}, 
                     failed : function(msg) { console.log(msg); }}),
                 "mode_sc": new gui.Shortcut( {key : "Ctrl+M",
-                    active : function() { if(editor.getMode() == "text"){editor.setMode("code");}
-                        else if(editor.getMode() == "tree"){editor.setMode("text");}
+                    active : function() {if(editor.getMode() == "tree"){editor.setMode("text");}
                         else if(editor.getMode() == "code"){editor.setMode("tree");} }, 
                     failed : function(msg) { console.log(msg); }})
             }
@@ -100,7 +99,7 @@
             var container = document.getElementById('jsoneditor');
             var options = {
                 mode: 'code',
-                modes: ['code', 'tree', 'text'], // allowed modes
+                modes: ['code', 'tree' ], // allowed modes
                 onError: function (err) {
                     alert(err.toString());
                 },
