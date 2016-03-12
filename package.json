@@ -7,7 +7,7 @@
     "window": {
         "title": "JSONEditor",
         "icon": "json.png",
-        "toolbar": true,
+        "toolbar": false,
         "frame": true,
         "width": 800,
         "height": 500,
