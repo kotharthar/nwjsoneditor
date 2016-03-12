@@ -41,6 +41,7 @@
             var gui = require('nw.gui');
             var clipboard = gui.Clipboard.get();
             var gui_window = gui.Window.get();
+            var current_file = null;
 
 
             //Same as $(document).ready();
@@ -51,7 +52,37 @@
                   document.addEventListener('DOMContentLoaded', fn);
                 }
             }
-
+            
+            // Shortcut operations
+            var shortcuts = {
+                "copy_sc": new gui.Shortcut({ key : "Ctrl+C",
+                    active : function() { cp.set(editor.getText(),"text"); },
+                    failed : function(msg) { console.log(msg); }}),
+                "paste_sc": new gui.Shortcut({ key : "Ctrl+V",
+                    active : function() { var data = cp.get("text"); editor.aceEditor.insert(data); },
+                    failed : function(msg) { console.log(msg); }}),
+                "quit_sc": new gui.Shortcut( {key : "Ctrl+Q",
+                    active : function() { gui.App.quit(); }, 
+                    failed : function(msg) { console.log(msg); }}),
+                "close_sc": new gui.Shortcut({key : "Ctrl+W",
+                    active : function() { gui_window.close(true); },
+                    failed : function(msg) { console.log(msg); }}),
+                "new_sc": new gui.Shortcut( {key : "Ctrl+N",
+                    active : function() { gui.Window.open("index.html",{focus: true}); }, 
+                    failed : function(msg) { console.log(msg); }}),
+                "open_sc": new gui.Shortcut( {key : "Ctrl+O",
+                    active : function() { chooseFile('#fileDialog'); }, 
+                    failed : function(msg) { console.log(msg); }}),
+                "save_sc": new gui.Shortcut( {key : "Ctrl+S",
+                    active : function() { writeFile(); },
+                    failed : function(msg) { console.log(msg); }}),
+                "mode_sc": new gui.Shortcut( {key : "Ctrl+M",
+                    active : function() { if(editor.getMode() == "text"){editor.setMode("code");}
+                        else if(editor.getMode() == "tree"){editor.setMode("text");}
+                        else if(editor.getMode() == "code"){editor.setMode("tree");} }, 
+                    failed : function(msg) { console.log(msg); }})
+            }
+            
             // Copy Short-cut options
             var copy = {
                 key : "Ctrl+C",
@@ -126,6 +157,17 @@
                 }
             };
 
+            var save_file = {
+                key : "Ctrl+S",
+                active : function() {
+                    writeFile();
+                },
+                failed : function(msg) {
+                    // :(, fail to register the |key| or couldn't parse the |key|.
+                    console.log(msg);
+                }
+            };
+
             var switch_mode = {
                 key : "Ctrl+M",
                 active : function() {
@@ -171,33 +213,22 @@
             }
 
             //default shortcut bind
-            gui.App.registerGlobalHotKey(quit_shortcut);
-            gui.App.registerGlobalHotKey(copy_shortcut);
-            gui.App.registerGlobalHotKey(paste_shortcut);
-            gui.App.registerGlobalHotKey(close_window_shortcut);
-            gui.App.registerGlobalHotKey(new_window_shortcut);
-            gui.App.registerGlobalHotKey(open_file_shortcut);
-            gui.App.registerGlobalHotKey(switch_mode_shortcut);
+            for(sc in shortcuts) {
+                gui.App.registerGlobalHotKey(shortcuts[sc]);
+            }
 
             gui_window.on('focus', function(){
-                gui.App.registerGlobalHotKey(quit_shortcut);
-                gui.App.registerGlobalHotKey(copy_shortcut);
-                gui.App.registerGlobalHotKey(paste_shortcut);
-                gui.App.registerGlobalHotKey(close_window_shortcut);
-                gui.App.registerGlobalHotKey(new_window_shortcut);
-                gui.App.registerGlobalHotKey(open_file_shortcut);
-                gui.App.registerGlobalHotKey(switch_mode_shortcut);
+                for(sc in shortcuts) {
+                    gui.App.registerGlobalHotKey(shortcuts[sc]);
+                }
             });
 
             gui_window.on('blur', function(){
-                gui.App.unregisterGlobalHotKey(quit_shortcut);
-                gui.App.unregisterGlobalHotKey(copy_shortcut);
-                gui.App.unregisterGlobalHotKey(paste_shortcut);
-                gui.App.unregisterGlobalHotKey(close_window_shortcut);
-                gui.App.unregisterGlobalHotKey(new_window_shortcut);
-                gui.App.unregisterGlobalHotKey(open_file_shortcut);
-                gui.App.unregisterGlobalHotKey(switch_mode_shortcut);
+                for(sc in shortcuts) {
+                    gui.App.unregisterGlobalHotKey(shortcuts[sc]);
+                }
             });
+
             gui_window.on('closed', function(){
                     gui_window = null;
             });
@@ -214,6 +245,14 @@
                         }
                 }, false);
                 chooser.click();  
+            }
+
+            function writeFile() {
+                if(current_file){
+                    console.log(current_file);
+                    console.log(fs.writeFileSync(current_file, editor.getText(), "utf8"));
+                    console.log("file_written");
+                }
             }
             </script>
         </body>
