@@ -90,7 +90,7 @@
                     active : function() { current_file = null; editor.setText("{}"); gui_window.title = "untitled.json";}, 
                     failed : function(msg) { console.log(msg); }}),
                 "mode_sc": new gui.Shortcut( {key : "Ctrl+M",
-                    active : function() {if(editor.getMode() == "tree"){editor.setMode("tree");}
+                    active : function() {if(editor.getMode() == "tree"){editor.setMode("code");}
                         else if(editor.getMode() == "code"){editor.setMode("tree");} }, 
                     failed : function(msg) { console.log(msg); }})
             }
