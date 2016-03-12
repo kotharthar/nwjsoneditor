@@ -105,14 +105,7 @@
             };
             var editor = new JSONEditor(container, options, null);
 
-
-            // Set editor height
-            document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
-
-            // Auto resize function
-            window.onresize = function(){
-                document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
-            }
+            
 
             //default shortcut bind
             for(sc in shortcuts) {
@@ -170,7 +163,18 @@
                     fs.writeFileSync(current_file, editor.getText(), "utf8");
                 }
             }
-            </script>
+
+            // When windows is ready
+            ready(function(){
+                // Set editor height
+                document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
+
+                // Auto resize function
+                window.onresize = function(){
+                    document.getElementById("jsoneditor").style.height = (window.innerHeight - 5 )+ "px";
+                }           
+            });
+        </script>
         </body>
         </html>
 
