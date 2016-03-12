@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <title>JSONEditor</title>
+        <title>JSONEditor - untitled.json</title>
 
         <!-- when using the mode "code", it's important to specify charset utf-8 -->
         <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
@@ -34,6 +34,8 @@
 
         <div id="jsoneditor"></div>
         <input style="display:none;" id="fileDialog" type="file" accept=".json,.txt"/>
+        <input style="display:none;" id="saveAsFileDialog" type="file" accept=".json,.txt" nwsaveas/>
+
         <script>
 
             // Importanted API
@@ -41,7 +43,7 @@
             var gui = require('nw.gui');
             var clipboard = gui.Clipboard.get();
             var gui_window = gui.Window.get();
-            var current_file = null;
+            var current_file = "untitled.json";
 
 
             //Same as $(document).ready();
@@ -74,7 +76,13 @@
                     active : function() { chooseFile('#fileDialog'); }, 
                     failed : function(msg) { console.log(msg); }}),
                 "save_sc": new gui.Shortcut( {key : "Ctrl+S",
-                    active : function() { writeFile(); },
+                        active : function() { console.log(current_file);if(current_file == 'untitled.json'){ saveAsFile('#saveAsFileDialog'); } else {writeFile();} },
+                    failed : function(msg) { console.log(msg); }}),
+                "saveas_sc": new gui.Shortcut( {key : "Ctrl+Shift+S",
+                    active : function() { saveAsFile('#saveAsFileDialog'); },
+                    failed : function(msg) { console.log(msg); }}),
+                "newfile_sc": new gui.Shortcut( {key : "Ctrl+Shift+N",
+                    active : function() { current_file = null; editor.setText("{}"); gui_window.title = "untitled.json";}, 
                     failed : function(msg) { console.log(msg); }}),
                 "mode_sc": new gui.Shortcut( {key : "Ctrl+M",
                     active : function() { if(editor.getMode() == "text"){editor.setMode("code");}
@@ -127,11 +135,13 @@
                     gui_window = null;
             });
 
+            // Open File
             function chooseFile(name) {
                 var chooser = document.querySelector(name);
                 chooser.addEventListener("change", function(evt) {
                         if(this.value){
                             if(fs.existsSync(this.value)){
+                                current_file = this.value;
                                 gui_window.title = this.value;
                                 var content = fs.readFileSync(this.value, "utf8");
                                 editor.setText(content);
@@ -141,11 +151,23 @@
                 chooser.click();  
             }
 
+            // SaveAs file
+            function saveAsFile(name) {
+                if(current_file){document.getElementById('saveAsFileDialog').nwsaveas = current_file;}
+                var chooser = document.querySelector(name);
+                chooser.addEventListener("change", function(evt) {
+                    if(this.value){
+                        fs.writeFileSync(this.value, editor.getText(), "utf8");
+                        current_file = this.value;
+                        gui_window.title = current_file; 
+                    }
+                }, false);
+                chooser.click();  
+            }
+
             function writeFile() {
                 if(current_file){
-                    console.log(current_file);
-                    console.log(fs.writeFileSync(current_file, editor.getText(), "utf8"));
-                    console.log("file_written");
+                    fs.writeFileSync(current_file, editor.getText(), "utf8");
                 }
             }
             </script>
