@@ -63,10 +63,10 @@
             // Shortcut operations
             var shortcuts = {
                 "copy_sc": new gui.Shortcut({ key : "Ctrl+C",
-                    active : function() { cp.set(editor.getText(),"text"); },
+                    active : function() { clipboard.set(editor.getText(),"text"); },
                     failed : function(msg) { console.log(msg); }}),
                 "paste_sc": new gui.Shortcut({ key : "Ctrl+V",
-                    active : function() { var data = cp.get("text"); editor.aceEditor.insert(data); },
+                    active : function() { var data = clipboard.get("text"); editor.aceEditor.insert(data); },
                     failed : function(msg) { console.log(msg); }}),
                 "quit_sc": new gui.Shortcut( {key : "Ctrl+Q",
                     active : function() { gui.App.quit(); }, 
